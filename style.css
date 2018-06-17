@@ -1,0 +1,13 @@
+canvas { background-color: grey; display: block; margin: 0 auto; }
+.target {
+  position: absolute;
+  width: 512px;
+  height: 512px;
+  background-image: url('tagret.png');
+  /* background-image: url('../images/header-shade.jpg'); */
+  /* background-color: green; */
+   width:512px;
+   height:512px;
+   z-index:10;
+  /* background-color: red; */
+}
