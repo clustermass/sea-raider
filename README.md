@@ -20,8 +20,8 @@ In Sea Raider, player will be able to:
 This game will consist of a single screen made mostly with canvas, current count of torpedos left and ships destroyed. It also will have Game Over sign that will lit up when the game is over.
 
 Page will have Start button to start the game.
+![Wireframe](https://github.com/clustermass/sea-raider/blob/master/sea_raider.jpg)
 
-[[https://github.com/clustermass/sea-raider/blob/master/sea_raider.jpg]]
 
 ### Architecture and Technologies
 
