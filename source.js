@@ -6,10 +6,26 @@
 // }
 class Ship{
 
-  constructor(image, position, weight = 0){
+  constructor(image,invertedImage, long, weight = 0){
     this.image = image;
-    this.position = position;
+    this.position = 0;
     this.weight = weight;
+    this.inverted = false;
+    this.invertedImage = invertedImage;
+    this.normalImage = image;
+    this.long = long; //We need this to calculate random intervals between ships
+
+  }
+
+invert(){
+    if (this.inverted){
+      this.image = this.normalImage;
+      this.inverted = false;
+    }
+    else{
+      this.image = this.invertedImage;
+      this.inverted = true;
+    }
   }
 
 checkIfInRange(from,to){
@@ -40,27 +56,87 @@ let torpedoTMoveToX = 0;
 let torpedoTMoveToY = 0;
 let torpedoFillColor = "";
 
+let gameIsOver = false;
+let torpedosQuantity = 10;
+let destroyedShips = 0;
 let movementSpeed = 5
 let movementSpeedCount = 0;
 
-let ship1Pos = 815
-let ship2Pos = 910
+function startGame(){
 
-let ship1= new Ship(document.getElementById("ship1"),ship1Pos)
-let ship2= new Ship(document.getElementById("ship2"),ship2Pos)
 
+}
+
+// let ship1Pos = 815
+// let ship2Pos = 910
+
+function shuffleArray(a) {
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+}
+
+// let ship2= new Ship(document.getElementById("ship2"),document.getElementById("ship2i"),)
 
 
 let leftdirection = true
 let shipsArray = []
 
-shipsArray.push(ship1)
+generateShipsArray()
+
+function generateShipsArray(){
+  let ship1= new Ship(document.getElementById("ship1"),document.getElementById("ship1i"),90)
+  let ship2 = new Ship(document.getElementById("ship2"),document.getElementById("ship2i"),110)
+  let ship3 = new Ship(document.getElementById("ship2"),document.getElementById("ship2i"),110)
+  let ship4 = new Ship(document.getElementById("ship2"),document.getElementById("ship2i"),110)
+shipsArray = []
+
+
+
 shipsArray.push(ship2)
+shipsArray.push(ship3)
+shipsArray.push(ship4)
+
+shipsArray = shuffleArray(shipsArray)
+
+if(leftdirection){
+ship1.position = 820;
+for (let i = 0; i < shipsArray.length; i++) {
+  if (i === 0){
+    shipsArray[i].position = ship1.position + ship1.long + Math.floor((Math.random() * (591 - 45) + 45))
+  }else{
+    shipsArray[i].position = shipsArray[i-1].position + shipsArray[i-1].long + Math.floor((Math.random() * (591 - 45) + 45))
+  }
+}
+shipsArray.unshift(ship1)
+}else{
+  ship1.invert()
+  ship1.position = 0;
+  for (let i = 0; i < shipsArray.length; i++) {
+    if (i === 0){
+      shipsArray[i].position = - ship1.position - ship1.long - Math.floor((Math.random() * (591 - 45) + 45))
+      shipsArray[i].invert()
+    }else{
+      shipsArray[i].position = shipsArray[i-1].position - shipsArray[i-1].long - Math.floor((Math.random() * (591 - 45) + 45))
+      shipsArray[i].invert()
+    }
+  }
+  shipsArray.push(ship1)
+}
+
+
+}
+
+
+
+// shipsArray.push(ship2)
 
 
 
 let fire_sound = new Audio('./files/launch_sound2.mp3');
-
+let explosion = new Audio('./files/explosion.mp3');
 
 let rightPressed = false;
 let leftPressed = false;
@@ -339,37 +415,59 @@ function checkForHit(mousePos){
 }
 
 function fire(mousePos){
+torpedosQuantity--;
   if(!torpedoFired){
+    fire_sound.pause()
+    fire_sound.currentTime = 0;
     fire_sound.play();
     torpedoFired = true
     if(mousePos >= 455 && mousePos <= 544){
-        setTorpedoDirection(1)
+      setTorpedoDirection(1)
     }
     // Logic decides if game is over, if not, we set
     // torpedoFired to false
 
 
     setTimeout(()=>{
-  torpedoFired = false
-  torpedoShapeX = 0;
-  torpedoShapeY = 0;
-  torpedoFMoveToX = 0;
-  torpedoFMoveToY = 0;
-  torpedoSMoveToX = 0;
-  torpedoSMoveToY = 0;
-  torpedoTMoveToX = 0;
-  torpedoTMoveToY = 0;
-  console.log(checkForHit(mousePos))
-  },2800)
+      torpedoFired = false
+      torpedoShapeX = 0;
+      torpedoShapeY = 0;
+      torpedoFMoveToX = 0;
+      torpedoFMoveToY = 0;
+      torpedoSMoveToX = 0;
+      torpedoSMoveToY = 0;
+      torpedoTMoveToX = 0;
+      torpedoTMoveToY = 0;
+      console.log(checkForHit(mousePos))
+      evalFire(checkForHit(mousePos))
+      if(torpedosQuantity === 0){
+        gameIsOver = true; //we may need to set timeout here or move this method to another place.
+      }
+                      },2800)
 
   }
 
 }
 
 
-function countHit(sectionToFlash){
+function evalFire(sectionToFlash){
   if(sectionToFlash != "Z"){
-    
+    fire_sound.pause()
+    fire_sound.currentTime = 0;
+    explosion.play()
+    if(leftdirection){
+      leftdirection = false;
+    for (let i = 0; i < shipsArray.length; i++) {
+      shipsArray[i].invert()
+    }
+    }
+    else{
+      leftdirection = true;
+      for (let i = 0; i < shipsArray.length; i++) {
+        shipsArray[i].invert()
+      }
+    }
+    destroyedShips++ //We can set logic to restart game here, also to increase speed
   }
 }
 
@@ -427,28 +525,49 @@ for (let i = 350; i <= 2450; i = i + 350) {
 //     ctx.closePath();
 // }
 function moveShips() {
+  if(shipsArray.filter((ship)=>(ship.position > 0)).length === 0 && leftdirection){
+    generateShipsArray()
+  }else if (shipsArray.filter((ship)=>(ship.position < 1000)).length === 0 && !leftdirection) {
+    generateShipsArray()
+  }
 
-// This will determine moving speed
-if(movementSpeed === movementSpeedCount){
-  movementSpeedCount = 0;
 
-  if (leftdirection){
-    for (let i = 0; i < shipsArray.length; i++) {
-      shipsArray[i].position--
+
+  // This will determine moving speed
+  if(movementSpeed === movementSpeedCount){
+    movementSpeedCount = 0;
+
+    if (leftdirection){
+      for (let i = 0; i < shipsArray.length; i++) {
+        shipsArray[i].position--
+      }
+    }
+    else{
+      for (let i = 0; i < shipsArray.length; i++) {
+        shipsArray[i].position++
+      }
     }
   }
-  else{
-    for (let i = 0; i < shipsArray.length; i++) {
-      shipsArray[i].position++
+
+  else if(movementSpeed > 0){
+
+    if (leftdirection){
+      for (let i = 0; i < shipsArray.length; i++) {
+        shipsArray[i].position = shipsArray[i].position - movementSpeed
+      }
     }
+    else{
+      for (let i = 0; i < shipsArray.length; i++) {
+        shipsArray[i].position = shipsArray[i].position + movementSpeed
+      }
+    }
+
+  }else{
+    movementSpeedCount--;
   }
 }
-else{
- movementSpeedCount++;
-}
-}
 
-function draw(){
+function renderGame(){
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.imageSmoothingEnabled = true;
@@ -493,5 +612,11 @@ function draw(){
     // y += dy;
 }
 
-
-setInterval(draw, 5);
+function render(){
+  if(!gameIsOver){
+    renderGame()
+  }else{
+    
+  }
+}
+setInterval(render, 10);
