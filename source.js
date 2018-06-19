@@ -1,9 +1,31 @@
 
-// let img= document.getElementById("scream");
+
 
 // window.onload = ()=>{
 //   img = document.getElementById("scream");
 // }
+class Ship{
+
+  constructor(image, position, weight = 0){
+    this.image = image;
+    this.position = position;
+    this.weight = weight;
+  }
+
+checkIfInRange(from,to){
+    let tail = this.position + this.image.naturalWidth
+    if(from >= this.position && from <= tail){
+      return true
+    }
+    else if (to >= this.position && to <= tail){
+      return true
+    }
+    else{
+      return false
+    }
+  }
+
+}
 
 let canvas = document.getElementById("myCanvas");
 let ctx = canvas.getContext("2d");
@@ -18,11 +40,26 @@ let torpedoTMoveToX = 0;
 let torpedoTMoveToY = 0;
 let torpedoFillColor = "";
 
+let movementSpeed = 5
+let movementSpeedCount = 0;
+
+let ship1Pos = 815
+let ship2Pos = 910
+
+let ship1= new Ship(document.getElementById("ship1"),ship1Pos)
+let ship2= new Ship(document.getElementById("ship2"),ship2Pos)
+
+
+
+let leftdirection = true
+let shipsArray = []
+
+shipsArray.push(ship1)
+shipsArray.push(ship2)
+
+
+
 let fire_sound = new Audio('./files/launch_sound2.mp3');
-
-
-
-
 
 
 let rightPressed = false;
@@ -61,7 +98,8 @@ let xInGamePad = e.clientX - canvas.getBoundingClientRect().x //X starts at canv
   if(xInGamePad >= 0 && xInGamePad <= 1000){
 
       // console.log("cursor" +xInGamePad )
-      console.log("cursor" + (570 - e.clientY) )
+
+      // console.log("cursor" + (570 - e.clientY) )
 
 
   }
@@ -90,6 +128,216 @@ function keyUpHandler(e) {
     }
 }
 
+function checkIfAnyShipInRange(from, to){
+return_value = false
+  for (let i = 0; i < shipsArray.length; i++) {
+    if(shipsArray[i].checkIfInRange(from,to)){
+      return_value = true
+    }
+  }
+  return return_value
+}
+
+
+
+function checkForHit(mousePos){
+  // debugger
+  //These are canvas pixel ranges for hitting target, very close to real machine implementation
+  // | 185 - 214 |  215 - 244 | 245 - 274 | Section A
+  if(mousePos >= 0 && mousePos <= 274){
+    if(mousePos >= 0 && mousePos <= 214){
+      if(checkIfAnyShipInRange(185,214)){
+        return("A")
+      }
+      else{
+        return ("Z")
+      }
+    }
+    else if(mousePos >= 215 && mousePos <= 244){
+      if(checkIfAnyShipInRange(215,244)){
+        return("A")
+      }
+      else{
+        return ("Z")
+      }
+    }
+    else{
+      if(checkIfAnyShipInRange(245,274)){
+        return("A")
+      }
+      else{
+        return ("Z")
+      }
+
+    }
+  }
+  //  275 - 304 | 305 - 334 | 335 - 364 | Section B
+  if(mousePos >= 275 && mousePos <= 364){
+    if(mousePos >= 275 && mousePos <= 304){
+      if(checkIfAnyShipInRange(275,304)){
+        return("B")
+      }
+      else{
+        return ("Z")
+      }
+    }
+    else if(mousePos >= 305 && mousePos <= 334){
+      if(checkIfAnyShipInRange(305,334)){
+        return("B")
+      }
+      else{
+        return ("Z")
+      }
+    }
+    else{
+      if(checkIfAnyShipInRange(335,364)){
+        return("B")
+      }
+      else{
+        return ("Z")
+      }
+    }
+  }
+  // 365 - 394 | 395 - 424 | 425 - 454 | Section C
+  if(mousePos >= 365 && mousePos <= 454){
+    if(mousePos >= 365 && mousePos <= 394){
+      if(checkIfAnyShipInRange(365,394)){
+        return("C")
+      }
+      else{
+        return ("Z")
+      }
+    }
+    else if(mousePos >= 395 && mousePos <= 424){
+      if(checkIfAnyShipInRange(395,424)){
+        return("C")
+      }
+      else{
+        return ("Z")
+      }
+    }
+    else{
+      if(checkIfAnyShipInRange(425,454)){
+        return("C")
+      }
+      else{
+        return ("Z")
+      }
+    }
+  }
+  //  455 - 484 | 485 - 514 | 515 - 544 | Section D
+  if(mousePos >= 455 && mousePos <= 544){
+    if(mousePos >= 455 && mousePos <= 484){
+      if(checkIfAnyShipInRange(455,484)){
+        return("D")
+      }
+      else{
+        return ("Z")
+      }
+    }
+    else if(mousePos >= 485 && mousePos <= 514){
+      if(checkIfAnyShipInRange(485,514)){
+        return("D")
+      }
+      else{
+        return ("Z")
+      }
+    }
+    else{
+      if(checkIfAnyShipInRange(515,544)){
+        return("D")
+      }
+      else{
+        return ("Z")
+      }
+    }
+  }
+  // 545 - 574 | 575 - 604 | 605 - 634  | Section E
+  if(mousePos >= 545 && mousePos <= 634){
+    if(mousePos >= 545 && mousePos <= 574){
+      if(checkIfAnyShipInRange(545,574)){
+        return("E")
+      }
+      else{
+        return ("Z")
+      }
+    }
+    else if(mousePos >= 575 && mousePos <= 604){
+      if(checkIfAnyShipInRange(575,604)){
+        return("E")
+      }
+      else{
+        return ("Z")
+      }
+    }
+    else{
+      if(checkIfAnyShipInRange(605,634)){
+        return("E")
+      }
+      else{
+        return ("Z")
+      }
+    }
+  }
+  // 635 - 664 | 665 - 694 | 695 - 724 | Section F
+  if(mousePos >= 635 && mousePos <= 724){
+    if(mousePos >= 635 && mousePos <= 664){
+      if(checkIfAnyShipInRange(635,664)){
+        return("F")
+      }
+      else{
+        return ("Z")
+      }
+    }
+    else if(mousePos >= 665 && mousePos <= 694){
+      if(checkIfAnyShipInRange(665,694)){
+        return("F")
+      }
+      else{
+        return ("Z")
+      }
+    }
+    else{
+      if(checkIfAnyShipInRange(695,724)){
+        return("F")
+      }
+      else{
+        return ("Z")
+      }
+    }
+  }
+  // 725 - 754 | 755 - 784 | 785 - 814| Section G
+  if(mousePos >= 725 && mousePos <= 1000){
+    if(mousePos >= 725 && mousePos <= 754){
+      if(checkIfAnyShipInRange(725,754)){
+        return("G")
+      }
+      else{
+        return ("Z")
+      }
+    }
+    else if(mousePos >= 755 && mousePos <= 784){
+      if(checkIfAnyShipInRange(755,784)){
+        return("G")
+      }
+      else{
+        return ("Z")
+      }
+    }
+    else{
+      if(checkIfAnyShipInRange(785,814)){
+        return("G")
+      }
+      else{
+        return ("Z")
+      }
+    }
+  }
+
+
+
+}
+
 function fire(mousePos){
   if(!torpedoFired){
     fire_sound.play();
@@ -97,11 +345,10 @@ function fire(mousePos){
     if(mousePos >= 455 && mousePos <= 544){
         setTorpedoDirection(1)
     }
-
-
-
     // Logic decides if game is over, if not, we set
     // torpedoFired to false
+
+
     setTimeout(()=>{
   torpedoFired = false
   torpedoShapeX = 0;
@@ -112,12 +359,19 @@ function fire(mousePos){
   torpedoSMoveToY = 0;
   torpedoTMoveToX = 0;
   torpedoTMoveToY = 0;
+  console.log(checkForHit(mousePos))
   },2800)
 
   }
 
 }
 
+
+function countHit(sectionToFlash){
+  if(sectionToFlash != "Z"){
+    
+  }
+}
 
 function flashTrace(){
   torpedoFillColor = "rgba(255, 50, 50, 0.2)";
@@ -174,13 +428,34 @@ for (let i = 350; i <= 2450; i = i + 350) {
 // }
 function moveShips() {
 
+// This will determine moving speed
+if(movementSpeed === movementSpeedCount){
+  movementSpeedCount = 0;
 
+  if (leftdirection){
+    for (let i = 0; i < shipsArray.length; i++) {
+      shipsArray[i].position--
+    }
+  }
+  else{
+    for (let i = 0; i < shipsArray.length; i++) {
+      shipsArray[i].position++
+    }
+  }
+}
+else{
+ movementSpeedCount++;
+}
 }
 
 function draw(){
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.imageSmoothingEnabled = true;
+
+
+
+
     if(torpedoFired){
           ctx.beginPath();
           ctx.moveTo(torpedoShapeX, torpedoShapeY)
@@ -193,6 +468,10 @@ function draw(){
 
     }
 
+    for (let i = 0; i < shipsArray.length; i++) {
+      ctx.drawImage(shipsArray[i].image, shipsArray[i].position, 360)
+    }
+      moveShips();
     // drawBall();
     // drawPaddle();
     //
@@ -215,4 +494,4 @@ function draw(){
 }
 
 
-setInterval(draw, 10);
+setInterval(draw, 5);
