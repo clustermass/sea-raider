@@ -45,6 +45,13 @@ checkIfInRange(from,to){
 
 let canvas = document.getElementById("myCanvas");
 let ctx = canvas.getContext("2d");
+let mainScreen = document.getElementById("welcome");
+mainScreen.classList.add('show_welcome');
+let startButton = document.getElementById("start");
+startButton.addEventListener('click', ()=>(startGame()) )
+let displayTorpedos = document.getElementById("torpedos");
+let displayDestroyedShips = document.getElementById("ships");
+
 let torpedoFired = false;
 let torpedoShapeX = 0;
 let torpedoShapeY = 0;
@@ -62,9 +69,35 @@ let destroyedShips = 0;
 let movementSpeed = 5
 let movementSpeedCount = 0;
 
-function startGame(){
+function startGame(score = null){
+  if (score === null ){
+  mainScreen.classList.remove('show_welcome');
+  torpedoFired = false;
+  torpedoShapeX = 0;
+  torpedoShapeY = 0;
+  torpedoFMoveToX = 0;
+  torpedoFMoveToY = 0;
+  torpedoSMoveToX = 0;
+  torpedoSMoveToY = 0;
+  torpedoTMoveToX = 0;
+  torpedoTMoveToY = 0;
+  torpedoFillColor = "";
 
-
+  gameIsOver = false;
+  torpedosQuantity = 10;
+  destroyedShips = 0;
+  movementSpeed = -2
+  movementSpeedCount = 0;
+  displayTorpedos.innerHTML = torpedosQuantity
+  displayDestroyedShips.innerHTML = destroyedShips
+}else{
+  gameIsOver = false;
+  torpedosQuantity = torpedosQuantity + 11
+  destroyedShips = score
+  movementSpeed = movementSpeed + 1
+  displayTorpedos.innerHTML = torpedosQuantity
+  displayDestroyedShips.innerHTML = destroyedShips
+}
 }
 
 // let ship1Pos = 815
@@ -416,6 +449,7 @@ function checkForHit(mousePos){
 
 function fire(mousePos){
 torpedosQuantity--;
+displayTorpedos.innerHTML = torpedosQuantity
   if(!torpedoFired){
     fire_sound.pause()
     fire_sound.currentTime = 0;
@@ -468,6 +502,11 @@ function evalFire(sectionToFlash){
       }
     }
     destroyedShips++ //We can set logic to restart game here, also to increase speed
+    displayDestroyedShips.innerHTML = destroyedShips
+    if(destroyedShips % 10 === 0){
+      startGame(destroyedShips)
+    }
+
   }
 }
 
@@ -616,7 +655,7 @@ function render(){
   if(!gameIsOver){
     renderGame()
   }else{
-    
+    mainScreen.classList.add('show_welcome');
   }
 }
 setInterval(render, 10);

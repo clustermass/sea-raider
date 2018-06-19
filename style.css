@@ -28,3 +28,20 @@ margin: 0 auto;
 .img{
   display: none;
 }
+.welcome{
+  width:1000px;
+  height:570px;
+  background-color: green;
+  position: absolute;
+     z-index:-1;
+}
+.show_welcome{
+  z-index: 1;
+}
+.score{
+  width:1000px;
+  height:100px;
+  background-color: grey;
+  margin: auto;
+  display: flex;
+}
