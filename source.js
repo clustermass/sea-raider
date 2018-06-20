@@ -51,6 +51,8 @@ let startButton = document.getElementById("start");
 startButton.addEventListener('click', ()=>(startGame()) )
 let displayTorpedos = document.getElementById("torpedos");
 let displayDestroyedShips = document.getElementById("ships");
+let mask = document.getElementById("mask");
+
 
 let torpedoFired = false;
 let torpedoShapeX = 0;
@@ -68,8 +70,10 @@ let torpedosQuantity = 10;
 let destroyedShips = 0;
 let movementSpeed = 5
 let movementSpeedCount = 0;
+let explosionInProgress = false
 
 function startGame(score = null){
+  siren.play();
   if (score === null ){
   mainScreen.classList.remove('show_welcome');
   torpedoFired = false;
@@ -88,13 +92,16 @@ function startGame(score = null){
   destroyedShips = 0;
   movementSpeed = -2
   movementSpeedCount = 0;
+  explosionInProgress = false;
   displayTorpedos.innerHTML = torpedosQuantity
   displayDestroyedShips.innerHTML = destroyedShips
 }else{
+  mainScreen.classList.remove('show_welcome');
   gameIsOver = false;
   torpedosQuantity = torpedosQuantity + 11
   destroyedShips = score
   movementSpeed = movementSpeed + 1
+  explosionInProgress = false;
   displayTorpedos.innerHTML = torpedosQuantity
   displayDestroyedShips.innerHTML = destroyedShips
 }
@@ -162,14 +169,11 @@ shipsArray.unshift(ship1)
 
 }
 
-
-
 // shipsArray.push(ship2)
-
-
 
 let fire_sound = new Audio('./files/launch_sound2.mp3');
 let explosion = new Audio('./files/explosion.mp3');
+let siren = new Audio('./files/siren.mp3');
 
 let rightPressed = false;
 let leftPressed = false;
@@ -250,7 +254,6 @@ return_value = false
 
 
 function checkForHit(mousePos){
-  // debugger
   //These are canvas pixel ranges for hitting target, very close to real machine implementation
   // | 185 - 214 |  215 - 244 | 245 - 274 | Section A
   if(mousePos >= 0 && mousePos <= 274){
@@ -448,22 +451,37 @@ function checkForHit(mousePos){
 }
 
 function fire(mousePos){
-torpedosQuantity--;
-displayTorpedos.innerHTML = torpedosQuantity
+
   if(!torpedoFired){
+    torpedosQuantity--;
+    displayTorpedos.innerHTML = torpedosQuantity
     fire_sound.pause()
     fire_sound.currentTime = 0;
     fire_sound.play();
     torpedoFired = true
-    if(mousePos >= 455 && mousePos <= 544){
-      setTorpedoDirection(1)
+    if(mousePos >= 0 && mousePos <= 274){
+      setTorpedoDirection(-270)
     }
-    // Logic decides if game is over, if not, we set
-    // torpedoFired to false
-
+    else if(mousePos >= 275 && mousePos <= 364){
+      setTorpedoDirection(-180)
+    }
+    else if(mousePos >= 365 && mousePos <= 454){
+      setTorpedoDirection(-90)
+    }
+    else if(mousePos >= 455 && mousePos <= 544){
+      setTorpedoDirection(0)
+    }
+    else if(mousePos >= 545 && mousePos <= 634){
+      setTorpedoDirection(90)
+    }
+    else if(mousePos >= 635 && mousePos <= 724){
+      setTorpedoDirection(180)
+    }
+    else if(mousePos >= 725 && mousePos <= 1000){
+      setTorpedoDirection(270)
+    }
 
     setTimeout(()=>{
-      torpedoFired = false
       torpedoShapeX = 0;
       torpedoShapeY = 0;
       torpedoFMoveToX = 0;
@@ -472,7 +490,11 @@ displayTorpedos.innerHTML = torpedosQuantity
       torpedoSMoveToY = 0;
       torpedoTMoveToX = 0;
       torpedoTMoveToY = 0;
-      console.log(checkForHit(mousePos))
+      if(checkForHit(mousePos)!= "Z"){
+        setTimeout(()=>(torpedoFired = false),2000)
+      }else{
+        torpedoFired = false
+      }
       evalFire(checkForHit(mousePos))
       if(torpedosQuantity === 0){
         gameIsOver = true; //we may need to set timeout here or move this method to another place.
@@ -484,11 +506,104 @@ displayTorpedos.innerHTML = torpedosQuantity
 }
 
 
+function displayExplosion(sectionToFlash){
+  switch (sectionToFlash) {
+    case "A":
+      mask.classList.remove('mask')
+    canvas.classList.add('explosiona');
+      mask.classList.add('maskb');
+
+      setTimeout(()=>{
+        canvas.classList.remove('explosiona');
+        mask.classList.remove('maskb');
+        mask.classList.add('mask')
+        explosionInProgress = false;
+      },2000)
+      break;
+    case "B":
+      mask.classList.remove('mask')
+    canvas.classList.add('explosionb');
+      mask.classList.remove('maskb');
+      setTimeout(()=>{
+        canvas.classList.remove('explosionb');
+        mask.classList.remove('maskb');
+        mask.classList.add('mask')
+        explosionInProgress = false;
+      },2000)
+      break;
+    case "C":
+    mask.classList.remove('mask')
+    canvas.classList.add('explosionc');
+      mask.classList.remove('maskb');
+      setTimeout(()=>{
+        canvas.classList.remove('explosionc');
+        mask.classList.remove('maskb');
+        mask.classList.add('mask')
+        explosionInProgress = false;
+      },2000)
+      break;
+    case "D":
+    mask.classList.remove('mask')
+    canvas.classList.add('explosiond');
+      mask.classList.remove('maskb');
+      setTimeout(()=>{
+        canvas.classList.remove('explosiond');
+        mask.classList.remove('maskb');
+        mask.classList.add('mask')
+        explosionInProgress = false;
+      },2000)
+      break;
+    case "E":
+    mask.classList.remove('mask')
+    canvas.classList.add('explosione');
+      mask.classList.remove('maskb');
+      setTimeout(()=>{
+        canvas.classList.remove('explosione');
+        mask.classList.remove('maskb');
+        mask.classList.add('mask')
+        explosionInProgress = false;
+      },2000)
+      break;
+    case "F":
+    mask.classList.remove('mask')
+    canvas.classList.add('explosionf');
+      mask.classList.remove('maskb');
+      setTimeout(()=>{
+        canvas.classList.remove('explosionf');
+        mask.classList.remove('maskb');
+        mask.classList.add('mask')
+        explosionInProgress = false;
+      },2000)
+      break;
+    case "G":
+    mask.classList.remove('mask')
+    canvas.classList.add('explosiong');
+      mask.classList.remove('maskb');
+      setTimeout(()=>{
+        canvas.classList.remove('explosiong');
+        mask.classList.remove('maskb');
+        mask.classList.add('mask')
+        explosionInProgress = false;
+      },2000)
+      break;
+    default:
+
+  }
+}
+
 function evalFire(sectionToFlash){
   if(sectionToFlash != "Z"){
     fire_sound.pause()
     fire_sound.currentTime = 0;
+    explosionInProgress = true;
     explosion.play()
+    destroyedShips++ //We can set logic to restart game here, also to increase speed
+    displayDestroyedShips.innerHTML = destroyedShips
+    if(destroyedShips % 10 === 0){
+      setTimeout(()=>(startGame(destroyedShips)),2300)
+    }
+    displayExplosion(sectionToFlash)
+
     if(leftdirection){
       leftdirection = false;
     for (let i = 0; i < shipsArray.length; i++) {
@@ -501,11 +616,7 @@ function evalFire(sectionToFlash){
         shipsArray[i].invert()
       }
     }
-    destroyedShips++ //We can set logic to restart game here, also to increase speed
-    displayDestroyedShips.innerHTML = destroyedShips
-    if(destroyedShips % 10 === 0){
-      startGame(destroyedShips)
-    }
+
 
   }
 }
@@ -518,11 +629,9 @@ function flashTrace(){
   setTimeout(()=>(torpedoFillColor = "rgba(255, 50, 50, 0.3)"),275)
 }
 
-function setTorpedoDirection(dir){
+function setTorpedoDirection(delta){
 
-switch (dir) {
-  case 1:
-flashTrace()
+// Middle values used for delta
 torpedoShapeX = 489;
 torpedoShapeY = 514;
 torpedoFMoveToX = 511;
@@ -531,6 +640,12 @@ torpedoSMoveToX = 511;
 torpedoSMoveToY = 527;
 torpedoTMoveToX = 489;
 torpedoTMoveToY = 527;
+
+flashTrace()
+torpedoShapeX = 489 + delta;
+torpedoFMoveToX = 511 + delta;
+torpedoSMoveToX = 511 + delta;
+torpedoTMoveToX = 489 + delta;
 
 for (let i = 350; i <= 2450; i = i + 350) {
   setTimeout(()=>{
@@ -542,27 +657,8 @@ for (let i = 350; i <= 2450; i = i + 350) {
   }, i)
 }
 
-  case 2:
-  case 3:
-  case 4:
-  case 5:
-  case 6:
-  case 7:
-  default:
-
 }
 
-}
-
-
-
-// function drawBall() {
-//     ctx.beginPath();
-//     ctx.arc(x, y, ballRadius, 0, Math.PI*2);
-//     ctx.fillStyle = "#0095DD";
-//     ctx.fill();
-//     ctx.closePath();
-// }
 function moveShips() {
   if(shipsArray.filter((ship)=>(ship.position > 0)).length === 0 && leftdirection){
     generateShipsArray()
@@ -626,10 +722,14 @@ function renderGame(){
 
     }
 
-    for (let i = 0; i < shipsArray.length; i++) {
-      ctx.drawImage(shipsArray[i].image, shipsArray[i].position, 360)
-    }
+
+
+    if(!explosionInProgress){
+      for (let i = 0; i < shipsArray.length; i++) {
+        ctx.drawImage(shipsArray[i].image, shipsArray[i].position, 360)
+      }
       moveShips();
+    }
     // drawBall();
     // drawPaddle();
     //
