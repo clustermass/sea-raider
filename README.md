@@ -27,9 +27,10 @@ Page will have Start button to start the game.
 
 This project will be implemented with the following technologies:
 
-- Vanilla JavaScript for overall structure and game logic,
-- `HTML5 Canvas` for DOM manipulation and rendering,
-- `Web Audio API` for sound generation, processing and control.
+- Vanilla JavaScript for overall structure and game logic as well as DOM manipulation,
+- `HTML5 Canvas` for some DOM manipulation (moving parts) and some animation,
+- `Web Audio API` for sound generation, processing and control,
+- `Web pack` for compressing source javascript code.
 
 
 All game code will be placed in single javascript file.
