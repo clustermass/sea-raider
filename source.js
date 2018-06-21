@@ -90,11 +90,16 @@ let soundMuted = false;
 let gameIsOver = false;
 let torpedosQuantity = 10;
 let destroyedShips = 0;
-let movementSpeed = 5
+let movementSpeed = -2;
 let movementSpeedCount = 0;
 let explosionInProgress = false
-
+let explosionScene = new Image()
+explosionScene.src = './files/explosionscene.jpg';
+let explosionSection = 176;
+let explosionFire = new Image()
+explosionFire.src = './files/fire.png';
 function startGame(score = null){
+  target.classList.add('targeta')
   ambient.play();
   siren.play();
   if (score === null ){
@@ -523,13 +528,13 @@ function fire(mousePos){
       torpedoTMoveToX = 0;
       torpedoTMoveToY = 0;
       if(checkForHit(mousePos)!= "Z"){
-        setTimeout(()=>(torpedoFired = false),2000)
+        setTimeout(()=>(torpedoFired = false),1500)
       }else{
         torpedoFired = false
       }
       evalFire(checkForHit(mousePos))
       if(torpedosQuantity === 0){
-        gameIsOver = true;
+        setTimeout(()=>(gameIsOver = true),1500);
       }
     },2800)
 
@@ -542,81 +547,59 @@ function displayExplosion(sectionToFlash){
   switch (sectionToFlash) {
     case "A":
     mask.classList.remove('mask')
-    canvas.classList.add('explosiona');
-    mask.classList.add('maskb');
-
+    explosionSection = 176;
     setTimeout(()=>{
-      canvas.classList.remove('explosiona');
-      mask.classList.remove('maskb');
       mask.classList.add('mask')
       explosionInProgress = false;
-    },2000)
+    },1500)
     break;
     case "B":
     mask.classList.remove('mask')
-    canvas.classList.add('explosionb');
-    mask.classList.remove('maskb');
+    explosionSection = 266
     setTimeout(()=>{
-      canvas.classList.remove('explosionb');
-      mask.classList.remove('maskb');
       mask.classList.add('mask')
       explosionInProgress = false;
-    },2000)
+    },1500)
     break;
     case "C":
     mask.classList.remove('mask')
-    canvas.classList.add('explosionc');
-    mask.classList.remove('maskb');
+    explosionSection = 356
     setTimeout(()=>{
-      canvas.classList.remove('explosionc');
-      mask.classList.remove('maskb');
       mask.classList.add('mask')
       explosionInProgress = false;
-    },2000)
+    },1500)
     break;
     case "D":
     mask.classList.remove('mask')
-    canvas.classList.add('explosiond');
-    mask.classList.remove('maskb');
+    explosionSection = 446
     setTimeout(()=>{
-      canvas.classList.remove('explosiond');
-      mask.classList.remove('maskb');
       mask.classList.add('mask')
       explosionInProgress = false;
-    },2000)
+    },1500)
     break;
     case "E":
     mask.classList.remove('mask')
-    canvas.classList.add('explosione');
-    mask.classList.remove('maskb');
+    explosionSection = 536
     setTimeout(()=>{
-      canvas.classList.remove('explosione');
-      mask.classList.remove('maskb');
       mask.classList.add('mask')
       explosionInProgress = false;
-    },2000)
+    },1500)
     break;
     case "F":
     mask.classList.remove('mask')
-    canvas.classList.add('explosionf');
-    mask.classList.remove('maskb');
+    explosionSection = 626
     setTimeout(()=>{
-      canvas.classList.remove('explosionf');
-      mask.classList.remove('maskb');
       mask.classList.add('mask')
       explosionInProgress = false;
-    },2000)
+    },1500)
     break;
     case "G":
     mask.classList.remove('mask')
-    canvas.classList.add('explosiong');
-    mask.classList.remove('maskb');
+    explosionSection = 716
     setTimeout(()=>{
-      canvas.classList.remove('explosiong');
-      mask.classList.remove('maskb');
-      mask.classList.add('mask')
+        mask.classList.add('mask')
       explosionInProgress = false;
-    },2000)
+    },1500)
     break;
     default:
 
@@ -759,6 +742,9 @@ function renderGame(){
       ctx.drawImage(shipsArray[i].image, shipsArray[i].position, 360)
     }
     moveShips();
+  }else{
+    ctx.drawImage(explosionScene,0,0)
+    ctx.drawImage(explosionFire,explosionSection,265)
   }
 
 }
@@ -767,8 +753,12 @@ function render(){
   if(!gameIsOver){
     renderGame()
   }else{
+    target.classList.remove('targeta')
     mainScreen.classList.add('show_welcome');
     ambient.pause();
+    torpedoFired = false;
+    gameIsOver = false;
+    explosionInProgress = false;
   }
 }
 setInterval(render, 10);

@@ -16,27 +16,6 @@ display: block;
 margin: 0 auto;
 }
 
-.explosiona{
-  background-image: url('./files/explosiona.png');
-}
-.explosionb{
-  background-image: url('./files/explosionb.png');
-}
-.explosionc{
-  background-image: url('./files/explosionc.png');
-}
-.explosiond{
-  background-image: url('./files/explosiond.png');
-}
-.explosione{
-  background-image: url('./files/explosione.png');
-}
-.explosionf{
-  background-image: url('./files/explosionf.png');
-}
-.explosiong{
-  background-image: url('./files/explosiong.png');
-}
 .mask{
   background-image: url('./files/sea_mask.png');
   width:1000px;
@@ -50,8 +29,13 @@ margin: 0 auto;
   background-image: url('./files/target-seeker.png');
    width:1597px;
    height:475px;
+   z-index:-2;
+}
+
+.targeta {
    z-index:2;
 }
+
 .img{
   display: none;
 }
@@ -59,14 +43,10 @@ margin: 0 auto;
   width:1000px;
   height:570px;
   background-image: url('./files/title-bg.jpg');
-
+  background-repeat: no-repeat;
   background-position: bottom;
   position: absolute;
      z-index:-1;
-  /* display: flex;
-  flex-direction: column;
-  align-self: center;
-  flex-wrap: wrap; */
 }
 .welcome input {
   background-image: url('./files/start.jpg');
@@ -114,15 +94,6 @@ cursor: pointer;
   color: red;
 
 }
-.maskb{
-  background-image: url('./files/sea_mask_b.png');
-
-  width:1000px;
-  height:570px;
-  position: absolute;
-  z-index:1;
-}
-
 
 
 .mute {
