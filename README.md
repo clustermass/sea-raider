@@ -1,75 +1,59 @@
-## Sea Raider
 
-### Overview
-
-Sea Raider is arcade shooter inspired by original Sea Raider manufactured by by Midway Manufacturing Co. in 1979.
-The object of the game is fire torpedos at ships sailing across the horizon. Torpedos are aimed by viewing thru the periscope and fired using a mouse button. You must lead the ships with your torpedos and this is the skill/challenge of the game. After the torpedo is fired you can watch it streak just under the water surface towards the enemy ship. Player is given 10 topedos per game. In the background you hear sonar beeping and once a ship is hit you see and hear the explosion. If player is able to destroy 10 ships with 10 torpedos, game restarts, but ships counter continues to add up destroyed ships.
-
- [Play the game](https://clustermass.github.io/sea-raider/)
-
-### Functionality & MVP  
-
-In Sea Raider, player will be able to:
-
-- [ ] Start the game by pressing START button
-- [ ] Adjust periscope by moving mouse or using touchpad
-- [ ] Fire Torpedo by pressing left mouse button
-- [ ] Hear sounds on collisions and when torpedo is fired
-- [ ] Mute sound
-
-### Wireframes
-
-This game will consist of a single screen made mostly with canvas, current count of torpedos left and ships destroyed. It also will have Game Over sign that will lit up when the game is over.
-
-Page will have Start button to start the game.
-![Wireframe](https://github.com/clustermass/sea-raider/blob/master/sea_raider.jpg)
 ![Screenshot](https://github.com/clustermass/sea-raider/blob/master/screen.png)
 
+# Sea Raider
+ [Play the game](https://clustermass.github.io/sea-raider/)
 
-### Architecture and Technologies
+### Background and Overview
 
-This project will be implemented with the following technologies:
+Sea Raider is arcade shooter inspired by original Sea Raider manufactured by by Midway Manufacturing Co. in 1979.
+The object of the game is fire torpedos at ships sailing across the horizon. Torpedos are aimed by viewing thru the periscope and fired using a mouse button. You must lead the ships with your torpedos and this is the skill/challenge of the game. After the torpedo is fired you can watch it streak just under the water surface towards the enemy ship. Player is given 10 topedoes per game. In the background you hear sonar beeping and once a ship is hit you see and hear the explosion. If player is able to destroy 10 ships with 10 torpedos, game restarts, but ships counter continues to add up destroyed ships.
 
-- Vanilla JavaScript for overall structure and game logic as well as DOM manipulation,
-- `HTML5 Canvas` for some DOM manipulation (moving parts) and some animation,
-- `Web Audio API` for sound generation, processing and control,
-- `Web pack` for compressing source javascript code.
+### Technologies
 
+* Javascript
+* HTML5
+* Canvas
 
-All game code will be placed in single javascript file.
+### Key Features
 
-### Implementation Timeline
+* Logic is designed to emulate actual 1979 coin operated arcade game
+* Fun complexity added to gameplay: each new round ships are moving faster!
 
-**Over the weekend**:
-- [ ] Create backround image for gameplay.
-- [ ] Create periscope image and make it to response to mouse movements.
+### Challenges
+Main challenge was to emulate real machine behavior, where all logic was built with relays and switches.
+Original machine had 17 'hit' zones, that were matched to ships via mechanical 17 positional switch moved by periscope. The logic in this game that checks hits has 21 'hit' zones, but user only see 7 flashing torpedo "traces" (directions) on the screen, so it may seem that targeting ships is not very precise, but it is just an impression.  Speed increase feature was added with each new level, that original game couldn't implement due to mechanical limitations.
 
-**Day 1**: Create logic to move torpedos
+```javascript
+function checkForHit(mousePos){
+  //These are canvas pixel ranges for hitting target, very close to real machine implementation
+  // | 185 - 214 |  215 - 244 | 245 - 274 | Section A
+  //We flash torpedo trace A on the screen, but it actually divided to three 'hit' zones under the hood.
+  if(mousePos >= 0 && mousePos <= 274){
+    if(mousePos >= 0 && mousePos <= 214){
+      if(checkIfAnyShipInRange(185,214)){
+        return("A")
+      }
+      else{
+        return ("Z")
+      }
+    }
+    else if(mousePos >= 215 && mousePos <= 244){
+      if(checkIfAnyShipInRange(215,244)){
+        return("A")
+      }
+      else{
+        return ("Z")
+      }
+    }
+    else{
+      if(checkIfAnyShipInRange(245,274)){
+        return("A")
+      }
+      else{
+        return ("Z")
+      }
 
-- [ ] Make proper animations for moving torpedos in different directions
-- [ ] Find and attach appropriate sound when torpedo is fired.
-
-**Day 2**: Add ships to gameplay
-
-- [ ] Find ship image models on the internet
-- [ ] make them move on the screen
-
-
-**Day 3**: Create game logic
-
-
-- [ ] Set rules when game should be over
-- [ ] Count torpedos and destroyed ships
-- [ ] Implement collision detections
-- [ ] Count destroyed ships
-
-**Day 4**: Create initial screen to start the game
-
-- [ ] Create initial screen that will display previous game score
-- [ ] Clean up code, test game
-- [ ] Fix all minor bugs if found. 
-
-
-### Bonus feature
-
-- [ ] Increase ships speed every time round is restarted
+    }
+  }
+```
