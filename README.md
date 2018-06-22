@@ -5,7 +5,7 @@
 Sea Raider is arcade shooter inspired by original Sea Raider manufactured by by Midway Manufacturing Co. in 1979.
 The object of the game is fire torpedos at ships sailing across the horizon. Torpedos are aimed by viewing thru the periscope and fired using a mouse button. You must lead the ships with your torpedos and this is the skill/challenge of the game. After the torpedo is fired you can watch it streak just under the water surface towards the enemy ship. Player is given 10 topedos per game. In the background you hear sonar beeping and once a ship is hit you see and hear the explosion. If player is able to destroy 10 ships with 10 torpedos, game restarts, but ships counter continues to add up destroyed ships.
 
- [Live demo](http://searaider.coolpage.biz/)
+ [Play the game](https://clustermass.github.io/sea-raider/)
 
 ### Functionality & MVP  
 
@@ -23,6 +23,7 @@ This game will consist of a single screen made mostly with canvas, current count
 
 Page will have Start button to start the game.
 ![Wireframe](https://github.com/clustermass/sea-raider/blob/master/sea_raider.jpg)
+![Screenshot](https://github.com/clustermass/sea-raider/blob/master/screen.png)
 
 
 ### Architecture and Technologies
