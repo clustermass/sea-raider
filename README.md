@@ -18,7 +18,7 @@ The object of the game is fire torpedos at ships sailing across the horizon. Tor
 ### Key Features
 
 * Logic is designed to emulate actual 1979 coin operated arcade game
-* Fun complexity added to gameplay: each new round ships are moving faster!
+* Fun complexity added to the gameplay: each new round ships are moving faster!
 
 ### Challenges
 Main challenge was to emulate real machine behavior, where all logic was built with relays and switches.
@@ -28,7 +28,7 @@ Original machine had 17 'hit' zones, that were matched to ships via mechanical 1
 function checkForHit(mousePos){
   //These are canvas pixel ranges for hitting target, very close to real machine implementation
   // | 185 - 214 |  215 - 244 | 245 - 274 | Section A
-  //We flash torpedo trace A on the screen, but it actually divided to three 'hit' zones under the hood.
+  //We flash torpedo trace A on the screen, but it actually divided into three 'hit' zones under the hood.
   if(mousePos >= 0 && mousePos <= 274){
     if(mousePos >= 0 && mousePos <= 214){
       if(checkIfAnyShipInRange(185,214)){
