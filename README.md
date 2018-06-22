@@ -66,8 +66,8 @@ All game code will be placed in single javascript file.
 **Day 4**: Create initial screen to start the game
 
 - [ ] Create initial screen that will display previous game score
-- [ ] Build out list of instruments
-- [ ] Have a styled `Canvas`, nice looking controls and title
+- [ ] Clean up code, test game
+- [ ] Fix all minor bugs if found. 
 
 
 ### Bonus feature
