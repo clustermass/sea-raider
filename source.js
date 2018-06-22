@@ -74,7 +74,7 @@ function mutePage() {
 
 
 }
-
+let nextLevel = false
 let torpedoFired = false;
 let torpedoShapeX = 0;
 let torpedoShapeY = 0;
@@ -95,9 +95,21 @@ let movementSpeedCount = 0;
 let explosionInProgress = false
 let explosionScene = new Image()
 explosionScene.src = './files/explosionscene.jpg';
-let explosionSection = 176;
+let explosionSection = 0;
 let explosionFire = new Image()
 explosionFire.src = './files/fire.png';
+
+function bringMainScreenBack(){
+      setTimeout(()=>{
+          mainScreen.classList.add('show_welcome');
+          torpedoFired = false;
+          gameIsOver = false;
+          explosionInProgress = false;
+          mask.classList.add('mask')
+        },4000)
+        bringMainScreenBack = noop;
+      }
+
 function startGame(score = null){
   target.classList.add('targeta')
   ambient.play();
@@ -123,7 +135,29 @@ function startGame(score = null){
     explosionInProgress = false;
     displayTorpedos.innerHTML = torpedosQuantity
     displayDestroyedShips.innerHTML = destroyedShips
+
+    bringMainScreenBack = ()=>{
+          setTimeout(()=>{
+              mainScreen.classList.add('show_welcome');
+              torpedoFired = false;
+              gameIsOver = false;
+              explosionInProgress = false;
+              mask.classList.add('mask')
+            },4000)
+            bringMainScreenBack = noop;
+          }
+
   }else{
+    torpedoShapeX = 0;
+    torpedoShapeY = 0;
+    torpedoFMoveToX = 0;
+    torpedoFMoveToY = 0;
+    torpedoSMoveToX = 0;
+    torpedoSMoveToY = 0;
+    torpedoTMoveToX = 0;
+    torpedoTMoveToY = 0;
+    torpedoFillColor = "";
+    torpedoFired = false;
     mainScreen.classList.remove('show_welcome');
     gameIsOver = false;
     torpedosQuantity = torpedosQuantity + 11
@@ -503,16 +537,23 @@ function fire(mousePos){
       torpedoSMoveToY = 0;
       torpedoTMoveToX = 0;
       torpedoTMoveToY = 0;
-      if(checkForHit(mousePos)!= "Z"){
-        setTimeout(()=>(torpedoFired = false),1500)
-      }else{
+
+      let check = checkForHit(mousePos)
+
+      if(check === "Z"){
         torpedoFired = false
       }
-      evalFire(checkForHit(mousePos))
-      if(torpedosQuantity === 0){
-        setTimeout(()=>(gameIsOver = true),1500);
-      }
-    },2800)
+    evalFire(check)
+    if(torpedosQuantity === 0 && destroyedShips === 0){
+      gameIsOver = true
+    }
+    else if (torpedosQuantity === 0 && destroyedShips % 10 !== 0) {
+      gameIsOver = true
+    }
+    else if (check != "Z" && destroyedShips % 10 === 0) {
+      nextLevel = true
+    }
+  },2800)
 
   }
 
@@ -527,6 +568,7 @@ function displayExplosion(sectionToFlash){
     setTimeout(()=>{
       mask.classList.add('mask')
       explosionInProgress = false;
+      torpedoFired = false
     },1500)
     break;
     case "B":
@@ -535,6 +577,7 @@ function displayExplosion(sectionToFlash){
     setTimeout(()=>{
       mask.classList.add('mask')
       explosionInProgress = false;
+      torpedoFired = false
     },1500)
     break;
     case "C":
@@ -543,6 +586,7 @@ function displayExplosion(sectionToFlash){
     setTimeout(()=>{
       mask.classList.add('mask')
       explosionInProgress = false;
+      torpedoFired = false
     },1500)
     break;
     case "D":
@@ -551,6 +595,7 @@ function displayExplosion(sectionToFlash){
     setTimeout(()=>{
       mask.classList.add('mask')
       explosionInProgress = false;
+      torpedoFired = false
     },1500)
     break;
     case "E":
@@ -559,6 +604,7 @@ function displayExplosion(sectionToFlash){
     setTimeout(()=>{
       mask.classList.add('mask')
       explosionInProgress = false;
+      torpedoFired = false
     },1500)
     break;
     case "F":
@@ -567,6 +613,7 @@ function displayExplosion(sectionToFlash){
     setTimeout(()=>{
       mask.classList.add('mask')
       explosionInProgress = false;
+      torpedoFired = false
     },1500)
     break;
     case "G":
@@ -575,6 +622,7 @@ function displayExplosion(sectionToFlash){
     setTimeout(()=>{
         mask.classList.add('mask')
       explosionInProgress = false;
+      torpedoFired = false
     },1500)
     break;
     default:
@@ -590,9 +638,6 @@ function evalFire(sectionToFlash){
     explosion.play()
     destroyedShips++
     displayDestroyedShips.innerHTML = destroyedShips
-    if(destroyedShips % 10 === 0){
-      setTimeout(()=>(startGame(destroyedShips)),2300)
-    }
     displayExplosion(sectionToFlash)
 
     if(leftdirection){
@@ -649,6 +694,7 @@ function setTorpedoDirection(delta){
 }
 
 function moveShips() {
+
   if(shipsArray.filter((ship)=>(ship.position > 0)).length === 0 && leftdirection){
     generateShipsArray()
   }else if (shipsArray.filter((ship)=>(ship.position < 1000)).length === 0 && !leftdirection) {
@@ -696,9 +742,6 @@ function renderGame(){
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.imageSmoothingEnabled = true;
 
-
-
-
   if(torpedoFired){
     ctx.beginPath();
     ctx.moveTo(torpedoShapeX, torpedoShapeY)
@@ -727,14 +770,40 @@ function renderGame(){
 
 function render(){
   if(!gameIsOver){
+
+    if(nextLevel){
+      nextLevel = false;
+      setTimeout(()=>{
+        siren.play();
+        torpedosQuantity = torpedosQuantity + 11
+        movementSpeedCount = 0;
+        movementSpeed = movementSpeed + 1
+        displayTorpedos.innerHTML = torpedosQuantity
+        explosionInProgress = false
+
+      },1500)
+
+
+    }
+
     renderGame()
   }else{
-    target.classList.remove('targeta')
-    mainScreen.classList.add('show_welcome');
     ambient.pause();
-    torpedoFired = false;
-    gameIsOver = false;
-    explosionInProgress = false;
+
+    ctx.font="35px Arial";
+
+      ctx.fillStyle = "#0E1E3D";
+
+
+    target.classList.remove('targeta')
+    torpedoFired = true;
+    ctx.fillText("GAME OVER",400,250);
+    ctx.fillText(`TOTAL SHIPS DESTROYED: ${destroyedShips}`,270,300);
+    bringMainScreenBack()
+
+
   }
-}
+  }
+  function noop() {};
+
 setInterval(render, 10);
